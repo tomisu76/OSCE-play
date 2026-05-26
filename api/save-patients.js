@@ -44,33 +44,50 @@ export default async function handler(request, response) {
     Accept: 'application/vnd.github+json',
     Authorization: `Bearer ${token}`,
     'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'User-Agent': 'OSCE-Play-Vercel-App'
   };
-
-  const currentFileResponse = await fetch(`${apiBase}/contents/${path}?ref=main`, { headers });
-  if (!currentFileResponse.ok) {
-    const details = await currentFileResponse.text();
-    return response.status(currentFileResponse.status).json({ ok: false, message: 'Could not read current patients file.', details });
-  }
-  const currentFile = await currentFileResponse.json();
 
   const content = JSON.stringify(patients, null, 2) + '\n';
   const encodedContent = Buffer.from(content, 'utf8').toString('base64');
 
+  let currentSha = null;
+  const currentFileResponse = await fetch(`${apiBase}/contents/${path}?ref=main`, { headers });
+
+  if (currentFileResponse.ok) {
+    const currentFile = await currentFileResponse.json();
+    currentSha = currentFile.sha;
+  } else if (currentFileResponse.status !== 404) {
+    const details = await currentFileResponse.text();
+    return response.status(currentFileResponse.status).json({
+      ok: false,
+      message: 'Could not read current patients file. Check that GITHUB_WORKFLOW_TOKEN has Contents: Read and write permission.',
+      details
+    });
+  }
+
+  const saveBody = {
+    message: regenerateAudio ? 'Update patient text and regenerate audio' : 'Update patient text',
+    content: encodedContent,
+    branch: 'main'
+  };
+
+  if (currentSha) {
+    saveBody.sha = currentSha;
+  }
+
   const saveResponse = await fetch(`${apiBase}/contents/${path}`, {
     method: 'PUT',
     headers,
-    body: JSON.stringify({
-      message: regenerateAudio ? 'Update patient text and regenerate audio' : 'Update patient text',
-      content: encodedContent,
-      sha: currentFile.sha,
-      branch: 'main'
-    })
+    body: JSON.stringify(saveBody)
   });
 
   if (!saveResponse.ok) {
     const details = await saveResponse.text();
-    return response.status(saveResponse.status).json({ ok: false, message: 'Could not save patients file.', details });
+    const message = saveResponse.status === 404
+      ? 'Could not save patients file. The GitHub token probably cannot access tomisu76/OSCE-play, or it does not have Contents: Read and write permission.'
+      : 'Could not save patients file.';
+    return response.status(saveResponse.status).json({ ok: false, message, details });
   }
 
   let workflowStarted = false;
@@ -83,7 +100,10 @@ export default async function handler(request, response) {
 
     if (!workflowResponse.ok) {
       const details = await workflowResponse.text();
-      return response.status(workflowResponse.status).json({ ok: false, message: 'Patients saved, but audio workflow could not start.', details });
+      const message = workflowResponse.status === 404
+        ? 'Patients saved, but audio workflow could not start. Check that GITHUB_WORKFLOW_TOKEN has Actions: Read and write permission.'
+        : 'Patients saved, but audio workflow could not start.';
+      return response.status(workflowResponse.status).json({ ok: false, message, details });
     }
     workflowStarted = true;
   }
