@@ -1,9 +1,15 @@
 (() => {
-  const AUDIO_LINK_VERSION = 'slide001-wav-20260526d';
+  const AUDIO_LINK_VERSION = 'presentation-click-fix-20260526e';
   const PLAY_FULL_TEXT = '▶ Play full presentation';
   const STOP_TEXT = '⏸ Stop';
   let directAudio = null;
   let directAutoPlay = false;
+
+  function setAutoPlaying(value) {
+    directAutoPlay = Boolean(value);
+    document.body.classList.toggle('presentation-auto-playing', directAutoPlay);
+    applyEnglishLabels();
+  }
 
   function applyEnglishLabels() {
     const playAllButton = document.getElementById('playAllButton');
@@ -35,6 +41,11 @@
       body.fullscreen-mode .fs-slide.active{height:100dvh!important;align-items:center!important;justify-content:center!important;}
       .fs-card,.fs-line{scrollbar-width:none;}
       .fs-card::-webkit-scrollbar,.fs-line::-webkit-scrollbar{display:none;}
+      body.presentation-auto-playing .fs-slide .slide-audio-btn{
+        opacity:.55!important;
+        pointer-events:none!important;
+        filter:grayscale(.15)!important;
+      }
       @media(max-width:920px){
         .fs-line{font-size:clamp(1.65rem,5.7vw,3rem)!important;line-height:1.18!important;}
         .vital-tag{white-space:nowrap!important;}
@@ -125,6 +136,14 @@
   injectMobilePolishStyles();
   applyEnglishLabels();
 
+  document.addEventListener('click', (event) => {
+    if (!directAutoPlay) return;
+    if (event.target.closest('.fs-slide .slide-audio-btn')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+
   function getActiveSlideIndex() {
     const slides = Array.from(document.querySelectorAll('.fs-slide'));
     const index = slides.findIndex(slide => slide.classList.contains('active'));
@@ -151,13 +170,16 @@
     const activeSlide = document.querySelector('.fs-slide.active');
     const button = activeSlide?.querySelector('.slide-audio-btn');
     if (button) {
-      button.textContent = `Audio not found: ${path}`;
+      button.textContent = 'Audio could not start. Tap Next, or reload.';
       button.classList.add('audio-missing');
     }
     console.error('OSCE Play audio failed:', path);
   }
 
   window.playCurrentAudio = function playCurrentAudioDirect(onEnded) {
+    const fromAutoPlay = typeof onEnded === 'function';
+    if (directAutoPlay && !fromAutoPlay) return;
+
     const slideIndex = getActiveSlideIndex();
     const path = getDirectAudioPath(slideIndex);
     if (!path) return;
@@ -167,25 +189,36 @@
     directAudio.preload = 'auto';
     directAudio.onended = () => {
       directAudio = null;
-      if (typeof onEnded === 'function') onEnded();
+      if (fromAutoPlay) onEnded();
     };
     directAudio.onerror = () => {
-      showAudioError(path);
-      if (typeof onEnded === 'function') onEnded();
+      console.error('OSCE Play audio load failed:', path);
+      if (fromAutoPlay) {
+        setTimeout(onEnded, 300);
+      } else {
+        showAudioError(path);
+      }
     };
-    directAudio.play().catch(() => showAudioError(path));
+    directAudio.play().catch((error) => {
+      console.warn('OSCE Play audio start blocked/interrupted:', error?.name || error, path);
+      if (fromAutoPlay) {
+        setTimeout(onEnded, 300);
+      } else if (!directAutoPlay) {
+        showAudioError(path);
+      }
+    });
   };
 
   window.togglePresentationPlayback = function toggleDirectPresentationPlayback() {
     const button = document.getElementById('playAllButton');
     if (directAutoPlay) {
-      directAutoPlay = false;
+      setAutoPlaying(false);
       stopDirectAudio();
       if (button) button.textContent = PLAY_FULL_TEXT;
       return;
     }
 
-    directAutoPlay = true;
+    setAutoPlaying(true);
     if (button) button.textContent = STOP_TEXT;
 
     const playThenNext = () => {
@@ -195,7 +228,8 @@
       window.playCurrentAudio(() => {
         if (!directAutoPlay) return;
         if (currentIndex >= slides.length - 1) {
-          directAutoPlay = false;
+          setAutoPlaying(false);
+          stopDirectAudio();
           if (button) button.textContent = PLAY_FULL_TEXT;
           return;
         }
@@ -206,6 +240,15 @@
 
     playThenNext();
   };
+
+  const originalExitSlides = window.exitSlides;
+  if (typeof originalExitSlides === 'function') {
+    window.exitSlides = function exitSlidesWithAudioCleanup() {
+      setAutoPlaying(false);
+      stopDirectAudio();
+      originalExitSlides();
+    };
+  }
 
   const originalGetAudioPath = window.getAudioPath;
   if (typeof originalGetAudioPath === 'function') {
