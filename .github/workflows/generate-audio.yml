@@ -1,0 +1,71 @@
+name: Generate Kokoro Audio
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - index.html
+      - scripts/**
+      - requirements.txt
+      - package.json
+      - .github/workflows/generate-audio.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate-audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system audio dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y espeak-ng libsndfile1 ffmpeg
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Extract audio manifest from index.html
+        run: npm run manifest
+
+      - name: Generate all Kokoro audio files
+        run: npm run audio:all
+
+      - name: Show generated audio count
+        run: |
+          echo "Generated WAV files:"
+          find audio -type f -name '*.wav' | wc -l
+          du -sh audio || true
+
+      - name: Commit generated audio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio audio_manifest.json
+          if git diff --cached --quiet; then
+            echo "No generated audio changes to commit."
+          else
+            git commit -m "Generate Kokoro audio files"
+            git push
+          fi
