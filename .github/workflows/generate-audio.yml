@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - index.html
+      - data/patients.json
       - scripts/**
       - requirements.txt
       - package.json
@@ -46,10 +46,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Extract audio manifest from index.html
+      - name: Extract audio manifest from editable patient data
         run: npm run manifest
 
-      - name: Generate all Kokoro audio files
+      - name: Regenerate and overwrite all Kokoro audio files
         run: npm run audio:all
 
       - name: Show generated audio count
@@ -58,7 +58,7 @@ jobs:
           find audio -type f -name '*.wav' | wc -l
           du -sh audio || true
 
-      - name: Commit generated audio
+      - name: Commit regenerated audio
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -66,6 +66,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No generated audio changes to commit."
           else
-            git commit -m "Generate Kokoro audio files"
+            git commit -m "Regenerate Kokoro audio files"
             git push
           fi
