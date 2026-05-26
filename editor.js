@@ -1,59 +1,19 @@
 (() => {
-  function applyAnnaToText(value) {
+  function normalizeIntroNamePlaceholder(value) {
     return String(value || '')
-      .replace(/Good morning\. My name is _____\. I am a practical nurse\./g, 'Good morning. My name is Anna. I am a practical nurse.')
-      .replace(/Good morning\. My name is blank\. I am a practical nurse\./g, 'Good morning. My name is Anna. I am a practical nurse.');
+      .replace(/Good morning\. My name is Anna\. I am a practical nurse\./g, 'Good morning. My name is _____. I am a practical nurse.')
+      .replace(/Good morning\. My name is blank\. I am a practical nurse\./g, 'Good morning. My name is _____. I am a practical nurse.');
   }
 
   const originalNormalizeLine = window.normalizeLine;
   if (typeof originalNormalizeLine === 'function') {
-    window.normalizeLine = function normalizeLineWithAnna(line) {
+    window.normalizeLine = function normalizeLineWithPlaceholder(line) {
       const normalized = originalNormalizeLine(line);
       if (normalized && normalized.speaker === 'nurse') {
-        normalized.text = applyAnnaToText(normalized.text);
-        normalized.audioText = applyAnnaToText(normalized.audioText);
+        normalized.text = normalizeIntroNamePlaceholder(normalized.text);
+        normalized.audioText = normalizeIntroNamePlaceholder(normalized.audioText);
       }
       return normalized;
-    };
-  }
-
-  const originalPlayAudioForSlideIndex = window.playAudioForSlideIndex;
-  function speakAnnaIntro(text, onEnded) {
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-      originalPlayAudioForSlideIndex?.(1, onEnded);
-      return;
-    }
-
-    try { window.stopCurrentAudio?.(); } catch {}
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(applyAnnaToText(text));
-    utterance.lang = 'en-US';
-    utterance.rate = 0.88;
-    utterance.pitch = 1.05;
-    utterance.volume = 1;
-
-    const voices = window.speechSynthesis.getVoices?.() || [];
-    const preferredVoice = voices.find(voice => /female|samantha|zira|jenny|aria|natural/i.test(voice.name)) || voices.find(voice => /^en/i.test(voice.lang));
-    if (preferredVoice) utterance.voice = preferredVoice;
-
-    utterance.onend = () => { if (typeof onEnded === 'function') onEnded(); };
-    utterance.onerror = () => { if (typeof onEnded === 'function') onEnded(); };
-    window.speechSynthesis.speak(utterance);
-  }
-
-  if (typeof originalPlayAudioForSlideIndex === 'function') {
-    window.playAudioForSlideIndex = function playCorrectedAudioForSlideIndex(index, onEnded) {
-      const patient = window.getPatient?.();
-      const line = patient?.lines?.[index - 1] ? window.normalizeLine(patient.lines[index - 1]) : null;
-      const correctedAudioText = applyAnnaToText(line?.audioText || line?.text || '');
-
-      if (index === 1 && line?.speaker === 'nurse' && correctedAudioText.includes('Anna')) {
-        speakAnnaIntro(correctedAudioText, onEnded);
-        return;
-      }
-
-      originalPlayAudioForSlideIndex(index, onEnded);
     };
   }
 
