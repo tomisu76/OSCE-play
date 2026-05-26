@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "normalize": "node scripts/normalize_patient_texts.mjs",
     "manifest": "node scripts/extract_audio_manifest.mjs",
     "audio:test": "python scripts/generate_audio.py --limit 5 --overwrite",
     "audio:all": "python scripts/generate_audio.py --overwrite"
