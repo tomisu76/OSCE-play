@@ -1,4 +1,22 @@
 (() => {
+  function applyAnnaToText(value) {
+    return String(value || '')
+      .replace(/Good morning\. My name is _____\. I am a practical nurse\./g, 'Good morning. My name is Anna. I am a practical nurse.')
+      .replace(/Good morning\. My name is blank\. I am a practical nurse\./g, 'Good morning. My name is Anna. I am a practical nurse.');
+  }
+
+  const originalNormalizeLine = window.normalizeLine;
+  if (typeof originalNormalizeLine === 'function') {
+    window.normalizeLine = function normalizeLineWithAnna(line) {
+      const normalized = originalNormalizeLine(line);
+      if (normalized && normalized.speaker === 'nurse') {
+        normalized.text = applyAnnaToText(normalized.text);
+        normalized.audioText = applyAnnaToText(normalized.audioText);
+      }
+      return normalized;
+    };
+  }
+
   function injectSeparatedSlideStyles() {
     if (document.getElementById('separated-slide-editor-styles')) return;
     const style = document.createElement('style');
