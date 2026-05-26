@@ -32,5 +32,20 @@ text = text
   .replace(/ {2,}/g, ' ');
 
 const patients = JSON.parse(text);
+
+for (const patient of patients) {
+  if (patient.id === 4 || patient.name === 'Fast') {
+    patient.name = 'Michael Fast';
+    patient.introAudioText = 'Patient 4. Michael Fast. Rash for one week. Seafood allergy and no underlying disease.';
+    patient.lines = (patient.lines || []).map((line) => {
+      if (!Array.isArray(line)) return line;
+      if (line[1] === 'My name is Fast.' || line[2] === 'My name is Fast.') {
+        return [line[0], 'My name is Michael Fast.', 'My name is Michael Fast.'];
+      }
+      return line;
+    });
+  }
+}
+
 fs.writeFileSync(file, `${JSON.stringify(patients, null, 2)}\n`, 'utf8');
-console.log('Normalized patient text labels and units. Nurse name set to Anna.');
+console.log('Normalized patient text labels and units. Nurse name set to Anna. Patient 4 set to Michael Fast.');
