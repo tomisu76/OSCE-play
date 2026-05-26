@@ -1,7 +1,24 @@
 (() => {
   const AUDIO_LINK_VERSION = 'slide001-wav-20260526d';
+  const PLAY_FULL_TEXT = '▶ Play full presentation';
+  const STOP_TEXT = '⏸ Stop';
   let directAudio = null;
   let directAutoPlay = false;
+
+  function applyEnglishLabels() {
+    const playAllButton = document.getElementById('playAllButton');
+    if (playAllButton) playAllButton.textContent = directAutoPlay ? STOP_TEXT : PLAY_FULL_TEXT;
+
+    document.querySelectorAll('.panel-card p').forEach((paragraph) => {
+      paragraph.innerHTML = paragraph.innerHTML
+        .replace(/Prehraj celú prezentáciu/g, 'Play full presentation')
+        .replace(/prehrat celu prezentaciu/gi, 'Play full presentation');
+    });
+  }
+
+  window.updatePlayAllButton = function updatePlayAllButtonEnglish() {
+    applyEnglishLabels();
+  };
 
   function injectMobilePolishStyles() {
     if (document.getElementById('mobile-polish-styles')) return;
@@ -106,6 +123,7 @@
   }
 
   injectMobilePolishStyles();
+  applyEnglishLabels();
 
   function getActiveSlideIndex() {
     const slides = Array.from(document.querySelectorAll('.fs-slide'));
@@ -163,12 +181,12 @@
     if (directAutoPlay) {
       directAutoPlay = false;
       stopDirectAudio();
-      if (button) button.textContent = '▶ Prehraj celú prezentáciu';
+      if (button) button.textContent = PLAY_FULL_TEXT;
       return;
     }
 
     directAutoPlay = true;
-    if (button) button.textContent = '⏸ Stop';
+    if (button) button.textContent = STOP_TEXT;
 
     const playThenNext = () => {
       if (!directAutoPlay) return;
@@ -178,7 +196,7 @@
         if (!directAutoPlay) return;
         if (currentIndex >= slides.length - 1) {
           directAutoPlay = false;
-          if (button) button.textContent = '▶ Prehraj celú prezentáciu';
+          if (button) button.textContent = PLAY_FULL_TEXT;
           return;
         }
         window.nextSlide?.();
