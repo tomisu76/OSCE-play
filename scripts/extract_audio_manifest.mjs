@@ -38,19 +38,32 @@ function normalizeForTTS(rawText) {
   let text = stripHtml(rawText);
   text = text.replace(/\([^)]*\)/g, '');
   text = text.replace(/_____/g, 'blank');
-  text = text.replace(/\bBP\s+Your\s+BP\s+is\b/gi, 'Your blood pressure is');
-  text = text.replace(/\bRR\s+Your\s+respiratory rate\s+is\b/gi, 'Your respiratory rate is');
-  text = text.replace(/\bPR\s+Your\s+pulse rate\s+is\b/gi, 'Your pulse rate is');
-  text = text.replace(/\bBT\s+Your\s+body temperature\s+is\b/gi, 'Your body temperature is');
-  text = text.replace(/\bO2 sat\s+Your\s+oxygen saturation\s+is\b/gi, 'Your oxygen saturation is');
+
+  // Vital sign abbreviations.
+  text = text.replace(/\bBP\b/gi, 'blood pressure');
+  text = text.replace(/\bRR\b/gi, 'respiratory rate');
+  text = text.replace(/\bPR\b/gi, 'pulse rate');
+  text = text.replace(/\bBT\b/gi, 'body temperature');
+  text = text.replace(/\bO\s*2\s*sat\b/gi, 'oxygen saturation');
+  text = text.replace(/\bO2\s*sat\b/gi, 'oxygen saturation');
+
+  // Units and measurements.
+  text = text.replace(/(\d{2,3})\/(\d{2,3})\s*mm\s*Hg\b/gi, '$1 over $2 millimeters of mercury');
   text = text.replace(/(\d{2,3})\/(\d{2,3})\s*mmHg\b/gi, '$1 over $2 millimeters of mercury');
+  text = text.replace(/\bmm\s*Hg\b/gi, 'millimeters of mercury');
   text = text.replace(/\bmmHg\b/gi, 'millimeters of mercury');
   text = text.replace(/(\d+)\s*breaths\/min\b/gi, '$1 breaths per minute');
   text = text.replace(/(\d+)\s*beats\/min\b/gi, '$1 beats per minute');
-  text = text.replace(/(\d+(?:\.\d+)?)\s*°C\b/gi, '$1 degrees Celsius');
-  text = text.replace(/\bO2 sat\b/gi, 'oxygen saturation');
+  text = text.replace(/(\d+(?:\.\d+)?)\s*°\s*C\b/gi, '$1 degrees Celsius');
+  text = text.replace(/(\d+(?:\.\d+)?)\s*kg\b/gi, '$1 kilograms');
+  text = text.replace(/(\d+(?:\.\d+)?)\s*cm\b/gi, '$1 centimeters');
+  text = text.replace(/(\d+)\s*%/g, '$1 percent');
+
+  // Ordinals and appointment phrases.
   text = text.replace(/\b2nd floor\b/gi, 'second floor');
   text = text.replace(/\b1st floor\b/gi, 'first floor');
+  text = text.replace(/\ba\.m\.\b/gi, 'AM');
+  text = text.replace(/\bp\.m\.\b/gi, 'PM');
   text = text.replace(/\s+/g, ' ').trim();
   return text;
 }
@@ -83,7 +96,7 @@ const manifest = [];
 for (const patient of patients) {
   const patientSlug = getPatientFolder(patient);
   const introText = `Patient ${patient.id}. ${patient.name}. ${patient.scenario}`;
-  const introAudioText = patient.introAudioText || normalizeForTTS(introText);
+  const introAudioText = normalizeForTTS(patient.introAudioText || introText);
 
   manifest.push({
     id: `p${pad(patient.id, 2)}_s000`,
@@ -108,7 +121,7 @@ for (const patient of patients) {
       speaker: line.speaker,
       voice: VOICES[line.speaker] || 'female_nurse',
       text: stripHtml(line.text),
-      ttsText: line.audioText || normalizeForTTS(line.text),
+      ttsText: normalizeForTTS(line.audioText || line.text),
       audioPath: `audio/${patientSlug}/slide-${pad(slideIndex)}.wav`
     });
   });
