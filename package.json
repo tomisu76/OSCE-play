@@ -1,0 +1,11 @@
+{
+  "name": "osce-play",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "manifest": "node scripts/extract_audio_manifest.mjs",
+    "audio:test": "python scripts/generate_audio.py --limit 5",
+    "audio:all": "python scripts/generate_audio.py"
+  }
+}
