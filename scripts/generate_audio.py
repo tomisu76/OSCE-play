@@ -80,11 +80,17 @@ def generate_one(pipeline: KPipeline, item: dict[str, Any], overwrite: bool) -> 
     print(f"MAKE  {audio_path.relative_to(ROOT)} | {voice_key} -> {kokoro_voice} | {tts_text[:80]}")
 
     generator = pipeline(tts_text, voice=kokoro_voice)
+    audio_chunks = []
     for _, _, audio in generator:
-        sf.write(audio_path, audio, SAMPLE_RATE)
-        return True
+        audio_chunks.append(audio)
 
-    raise RuntimeError(f"Kokoro did not return audio for {item.get('id')}")
+    if not audio_chunks:
+        raise RuntimeError(f"Kokoro did not return audio for {item.get('id')}")
+
+    import numpy as np
+    full_audio = np.concatenate(audio_chunks)
+    sf.write(audio_path, full_audio, SAMPLE_RATE)
+    return True
 
 
 def main() -> None:
