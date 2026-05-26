@@ -1,5 +1,5 @@
 (() => {
-  const AUDIO_LINK_VERSION = 'slide001-20260526b';
+  const AUDIO_LINK_VERSION = 'slide001-20260526c';
   let directAudio = null;
   let directAutoPlay = false;
 
@@ -7,6 +7,26 @@
     const slides = Array.from(document.querySelectorAll('.fs-slide'));
     const index = slides.findIndex(slide => slide.classList.contains('active'));
     return index >= 0 ? index : 0;
+  }
+
+  function speakNurseIntro(onEnded) {
+    stopDirectAudio();
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+      if (typeof onEnded === 'function') onEnded();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance('Good morning. My name is blank. I am a practical nurse.');
+    utterance.lang = 'en-US';
+    utterance.rate = 0.88;
+    utterance.pitch = 1.08;
+    utterance.volume = 1;
+    const voices = window.speechSynthesis.getVoices?.() || [];
+    const preferredVoice = voices.find(voice => /female|samantha|zira|jenny|aria|natural/i.test(voice.name)) || voices.find(voice => /^en/i.test(voice.lang));
+    if (preferredVoice) utterance.voice = preferredVoice;
+    utterance.onend = () => { if (typeof onEnded === 'function') onEnded(); };
+    utterance.onerror = () => { if (typeof onEnded === 'function') onEnded(); };
+    window.speechSynthesis.speak(utterance);
   }
 
   function getDirectAudioPath(slideIndex = getActiveSlideIndex()) {
@@ -23,6 +43,7 @@
       directAudio.currentTime = 0;
       directAudio = null;
     }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   }
 
   function showAudioError(path) {
@@ -37,6 +58,11 @@
 
   window.playCurrentAudio = function playCurrentAudioDirect(onEnded) {
     const slideIndex = getActiveSlideIndex();
+    if (slideIndex === 1) {
+      speakNurseIntro(onEnded);
+      return;
+    }
+
     const path = getDirectAudioPath(slideIndex);
     if (!path) return;
 
