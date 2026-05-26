@@ -1,6 +1,6 @@
 name: Generate Kokoro Audio
 
-# Manual bulk regeneration trigger: 2026-05-26
+# Manual bulk regeneration trigger: 2026-05-26 nurse female patient male
 on:
   workflow_dispatch:
   push:
