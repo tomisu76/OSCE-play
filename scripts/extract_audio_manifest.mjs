@@ -1,9 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import vm from 'node:vm';
 
 const ROOT = path.resolve(process.cwd());
-const INDEX_PATH = path.join(ROOT, 'index.html');
+const DATA_PATH = path.join(ROOT, 'data', 'patients.json');
 const OUT_PATH = path.join(ROOT, 'audio_manifest.json');
 
 const VOICES = {
@@ -17,7 +16,7 @@ function pad(number, size = 3) {
 }
 
 function slugify(value) {
-  return value
+  return String(value)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
@@ -38,14 +37,11 @@ function stripHtml(value) {
 function normalizeForTTS(rawText) {
   let text = stripHtml(rawText);
 
-  // Keep the spoken audio natural. The visual slide can show both numbers and words,
-  // but the audio should read the value once.
+  // The visual slide can show both numbers and words, but the audio should read the value once.
   text = text.replace(/\([^)]*\)/g, '');
-
   text = text.replace(/_____/g, 'blank');
+
   text = text.replace(/\bBP\s+Your\s+BP\s+is\b/gi, 'Your blood pressure is');
-  text = text.replace(/\bBP\s+Your\s+BP\s+\s+is\b/gi, 'Your blood pressure is');
-  text = text.replace(/\bBP\s+Your\s+BP\s+blood pressure\s+is\b/gi, 'Your blood pressure is');
   text = text.replace(/\bRR\s+Your\s+respiratory rate\s+is\b/gi, 'Your respiratory rate is');
   text = text.replace(/\bPR\s+Your\s+pulse rate\s+is\b/gi, 'Your pulse rate is');
   text = text.replace(/\bBT\s+Your\s+body temperature\s+is\b/gi, 'Your body temperature is');
@@ -64,30 +60,27 @@ function normalizeForTTS(rawText) {
   return text;
 }
 
-function extractPatientsFromIndex() {
-  const html = fs.readFileSync(INDEX_PATH, 'utf8');
-  const match = html.match(/const\s+patients\s*=\s*(\[[\s\S]*?\]);\s*let\s+currentPatient/);
-
-  if (!match) {
-    throw new Error('Could not find the patients array in index.html.');
+function loadPatients() {
+  if (!fs.existsSync(DATA_PATH)) {
+    throw new Error(`Missing ${path.relative(ROOT, DATA_PATH)}.`);
   }
 
-  const sandbox = {};
-  vm.createContext(sandbox);
-  vm.runInContext(`patients = ${match[1]};`, sandbox);
-
-  if (!Array.isArray(sandbox.patients)) {
-    throw new Error('Extracted patients value is not an array.');
+  const patients = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+  if (!Array.isArray(patients)) {
+    throw new Error('data/patients.json must contain a JSON array.');
   }
-
-  return sandbox.patients;
+  return patients;
 }
 
-const patients = extractPatientsFromIndex();
+function getPatientFolder(patient) {
+  return patient.audioFolder || `patient-${patient.id}-${slugify(patient.name)}`;
+}
+
+const patients = loadPatients();
 const manifest = [];
 
 for (const patient of patients) {
-  const patientSlug = `patient-${patient.id}-${slugify(patient.name)}`;
+  const patientSlug = getPatientFolder(patient);
 
   manifest.push({
     id: `p${pad(patient.id, 2)}_s000`,
@@ -118,4 +111,4 @@ for (const patient of patients) {
 }
 
 fs.writeFileSync(OUT_PATH, JSON.stringify(manifest, null, 2), 'utf8');
-console.log(`Created ${path.relative(ROOT, OUT_PATH)} with ${manifest.length} audio items.`);
+console.log(`Created ${path.relative(ROOT, OUT_PATH)} with ${manifest.length} audio items from data/patients.json.`);
