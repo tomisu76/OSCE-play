@@ -1,5 +1,6 @@
 name: Generate Kokoro Audio
 
+# Manual bulk regeneration trigger: 2026-05-26
 on:
   workflow_dispatch:
   push:
@@ -46,6 +47,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Normalize patient visible text and units
+        run: npm run normalize
+
       - name: Extract audio manifest from editable patient data
         run: npm run manifest
 
@@ -58,14 +62,14 @@ jobs:
           find audio -type f -name '*.wav' | wc -l
           du -sh audio || true
 
-      - name: Commit regenerated audio
+      - name: Commit regenerated audio and normalized text
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add audio audio_manifest.json
+          git add data/patients.json audio audio_manifest.json
           if git diff --cached --quiet; then
-            echo "No generated audio changes to commit."
+            echo "No generated audio or text changes to commit."
           else
-            git commit -m "Regenerate Kokoro audio files"
+            git commit -m "Normalize patient text and regenerate Kokoro audio"
             git push
           fi
