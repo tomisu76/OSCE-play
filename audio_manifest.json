@@ -161,7 +161,7 @@
     "speaker": "patient",
     "voice": "male_patient",
     "text": "Yes. My weight is 78 kg (seventy-eight kilograms). My height is 180 cm (one hundred eighty centimeters).",
-    "ttsText": "Yes. My weight is 78 kg . My height is 180 cm .",
+    "ttsText": "Yes. My weight is 78 kilograms . My height is 180 centimeters .",
     "audioPath": "audio/patient-1-john-white/slide-014.wav"
   },
   {
@@ -282,7 +282,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BP  (blood pressure) is 126/82 mmHg (one hundred twenty-six over eighty-two).",
-    "ttsText": "Your BP is 126 over 82 millimeters of mercury .",
+    "ttsText": "Your blood pressure is 126 over 82 millimeters of mercury .",
     "audioPath": "audio/patient-1-john-white/slide-025.wav"
   },
   {
@@ -293,7 +293,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your RR  respiratory rate is 18 breaths/min (eighteen breaths per minute).",
-    "ttsText": "Your RR respiratory rate is 18 breaths per minute .",
+    "ttsText": "Your respiratory rate respiratory rate is 18 breaths per minute .",
     "audioPath": "audio/patient-1-john-white/slide-026.wav"
   },
   {
@@ -304,7 +304,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your PR  pulse rate is 86 beats/min (eighty-six beats per minute).",
-    "ttsText": "Your PR pulse rate is 86 beats per minute .",
+    "ttsText": "Your pulse rate pulse rate is 86 beats per minute .",
     "audioPath": "audio/patient-1-john-white/slide-027.wav"
   },
   {
@@ -315,7 +315,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BT  body temperature is 36.9 °C (thirty-six point nine degrees Celsius).",
-    "ttsText": "Your BT body temperature is 36.9 degrees Celsius .",
+    "ttsText": "Your body temperature body temperature is 36.9 degrees Celsius .",
     "audioPath": "audio/patient-1-john-white/slide-028.wav"
   },
   {
@@ -326,7 +326,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your O2 sat  oxygen saturation is 98% (ninety-eight percent).",
-    "ttsText": "Your oxygen saturation oxygen saturation is 98% .",
+    "ttsText": "Your oxygen saturation oxygen saturation is 98 percent .",
     "audioPath": "audio/patient-1-john-white/slide-029.wav"
   },
   {
@@ -546,7 +546,7 @@
     "speaker": "patient",
     "voice": "male_patient",
     "text": "Yes. My height is 178 cm (one hundred seventy-eight centimeters). My weight is 68 kg (sixty-eight kilograms).",
-    "ttsText": "Yes. My height is 178 cm . My weight is 68 kg .",
+    "ttsText": "Yes. My height is 178 centimeters . My weight is 68 kilograms .",
     "audioPath": "audio/patient-2-thomas-blake/slide-014.wav"
   },
   {
@@ -667,7 +667,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BP  (blood pressure) is 146/92 mmHg (one hundred forty-six over ninety-two).",
-    "ttsText": "Your BP is 146 over 92 millimeters of mercury .",
+    "ttsText": "Your blood pressure is 146 over 92 millimeters of mercury .",
     "audioPath": "audio/patient-2-thomas-blake/slide-025.wav"
   },
   {
@@ -678,7 +678,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your RR  respiratory rate is 22 breaths/min (twenty-two breaths per minute).",
-    "ttsText": "Your RR respiratory rate is 22 breaths per minute .",
+    "ttsText": "Your respiratory rate respiratory rate is 22 breaths per minute .",
     "audioPath": "audio/patient-2-thomas-blake/slide-026.wav"
   },
   {
@@ -689,7 +689,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your PR  pulse rate is 104 beats/min (one hundred four beats per minute).",
-    "ttsText": "Your PR pulse rate is 104 beats per minute .",
+    "ttsText": "Your pulse rate pulse rate is 104 beats per minute .",
     "audioPath": "audio/patient-2-thomas-blake/slide-027.wav"
   },
   {
@@ -700,7 +700,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BT  body temperature is 36.8 °C (thirty-six point eight degrees Celsius).",
-    "ttsText": "Your BT body temperature is 36.8 degrees Celsius .",
+    "ttsText": "Your body temperature body temperature is 36.8 degrees Celsius .",
     "audioPath": "audio/patient-2-thomas-blake/slide-028.wav"
   },
   {
@@ -711,7 +711,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your O2 sat  oxygen saturation is 96% (ninety-six percent).",
-    "ttsText": "Your oxygen saturation oxygen saturation is 96% .",
+    "ttsText": "Your oxygen saturation oxygen saturation is 96 percent .",
     "audioPath": "audio/patient-2-thomas-blake/slide-029.wav"
   },
   {
@@ -931,7 +931,7 @@
     "speaker": "patient",
     "voice": "male_patient",
     "text": "Yes. My height is 168 cm (one hundred sixty-eight centimeters). My weight is 65 kg (sixty-five kilograms).",
-    "ttsText": "Yes. My height is 168 cm . My weight is 65 kg .",
+    "ttsText": "Yes. My height is 168 centimeters . My weight is 65 kilograms .",
     "audioPath": "audio/patient-3-peter-brown/slide-014.wav"
   },
   {
@@ -1074,7 +1074,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BP  (blood pressure) is 108/70 mmHg (one hundred eight over seventy).",
-    "ttsText": "Your BP is 108 over 70 millimeters of mercury .",
+    "ttsText": "Your blood pressure is 108 over 70 millimeters of mercury .",
     "audioPath": "audio/patient-3-peter-brown/slide-027.wav"
   },
   {
@@ -1085,7 +1085,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your RR  respiratory rate is 18 breaths/min (eighteen breaths per minute).",
-    "ttsText": "Your RR respiratory rate is 18 breaths per minute .",
+    "ttsText": "Your respiratory rate respiratory rate is 18 breaths per minute .",
     "audioPath": "audio/patient-3-peter-brown/slide-028.wav"
   },
   {
@@ -1096,7 +1096,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your PR  pulse rate is 96 beats/min (ninety-six beats per minute).",
-    "ttsText": "Your PR pulse rate is 96 beats per minute .",
+    "ttsText": "Your pulse rate pulse rate is 96 beats per minute .",
     "audioPath": "audio/patient-3-peter-brown/slide-029.wav"
   },
   {
@@ -1107,7 +1107,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BT  body temperature is 37.6 °C (thirty-seven point six degrees Celsius).",
-    "ttsText": "Your BT body temperature is 37.6 degrees Celsius .",
+    "ttsText": "Your body temperature body temperature is 37.6 degrees Celsius .",
     "audioPath": "audio/patient-3-peter-brown/slide-030.wav"
   },
   {
@@ -1118,7 +1118,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your O2 sat  oxygen saturation is 98% (ninety-eight percent).",
-    "ttsText": "Your oxygen saturation oxygen saturation is 98% .",
+    "ttsText": "Your oxygen saturation oxygen saturation is 98 percent .",
     "audioPath": "audio/patient-3-peter-brown/slide-031.wav"
   },
   {
@@ -1338,7 +1338,7 @@
     "speaker": "patient",
     "voice": "male_patient",
     "text": "Yes. My height is 172 cm (one hundred seventy-two centimeters). My weight is 70 kg (seventy kilograms).",
-    "ttsText": "Yes. My height is 172 cm . My weight is 70 kg .",
+    "ttsText": "Yes. My height is 172 centimeters . My weight is 70 kilograms .",
     "audioPath": "audio/patient-4-fast/slide-014.wav"
   },
   {
@@ -1481,7 +1481,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BP  (blood pressure) is 112/72 mmHg (one hundred twelve over seventy-two).",
-    "ttsText": "Your BP is 112 over 72 millimeters of mercury .",
+    "ttsText": "Your blood pressure is 112 over 72 millimeters of mercury .",
     "audioPath": "audio/patient-4-fast/slide-027.wav"
   },
   {
@@ -1492,7 +1492,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your RR  respiratory rate is 18 breaths/min (eighteen breaths per minute).",
-    "ttsText": "Your RR respiratory rate is 18 breaths per minute .",
+    "ttsText": "Your respiratory rate respiratory rate is 18 breaths per minute .",
     "audioPath": "audio/patient-4-fast/slide-028.wav"
   },
   {
@@ -1503,7 +1503,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your PR  pulse rate is 84 beats/min (eighty-four beats per minute).",
-    "ttsText": "Your PR pulse rate is 84 beats per minute .",
+    "ttsText": "Your pulse rate pulse rate is 84 beats per minute .",
     "audioPath": "audio/patient-4-fast/slide-029.wav"
   },
   {
@@ -1514,7 +1514,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BT  body temperature is 36.9 °C (thirty-six point nine degrees Celsius).",
-    "ttsText": "Your BT body temperature is 36.9 degrees Celsius .",
+    "ttsText": "Your body temperature body temperature is 36.9 degrees Celsius .",
     "audioPath": "audio/patient-4-fast/slide-030.wav"
   },
   {
@@ -1525,7 +1525,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your O2 sat  oxygen saturation is 99% (ninety-nine percent).",
-    "ttsText": "Your oxygen saturation oxygen saturation is 99% .",
+    "ttsText": "Your oxygen saturation oxygen saturation is 99 percent .",
     "audioPath": "audio/patient-4-fast/slide-031.wav"
   },
   {
@@ -1745,7 +1745,7 @@
     "speaker": "patient",
     "voice": "male_patient",
     "text": "Yes. My height is 184 cm (one hundred eighty-four centimeters). My weight is 72 kg (seventy-two kilograms).",
-    "ttsText": "Yes. My height is 184 cm . My weight is 72 kg .",
+    "ttsText": "Yes. My height is 184 centimeters . My weight is 72 kilograms .",
     "audioPath": "audio/patient-5-richard-gere/slide-014.wav"
   },
   {
@@ -1866,7 +1866,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BP  (blood pressure) is 122/78 mmHg (one hundred twenty-two over seventy-eight).",
-    "ttsText": "Your BP is 122 over 78 millimeters of mercury .",
+    "ttsText": "Your blood pressure is 122 over 78 millimeters of mercury .",
     "audioPath": "audio/patient-5-richard-gere/slide-025.wav"
   },
   {
@@ -1877,7 +1877,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your RR  respiratory rate is 18 breaths/min (eighteen breaths per minute).",
-    "ttsText": "Your RR respiratory rate is 18 breaths per minute .",
+    "ttsText": "Your respiratory rate respiratory rate is 18 breaths per minute .",
     "audioPath": "audio/patient-5-richard-gere/slide-026.wav"
   },
   {
@@ -1888,7 +1888,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your PR  pulse rate is 82 beats/min (eighty-two beats per minute).",
-    "ttsText": "Your PR pulse rate is 82 beats per minute .",
+    "ttsText": "Your pulse rate pulse rate is 82 beats per minute .",
     "audioPath": "audio/patient-5-richard-gere/slide-027.wav"
   },
   {
@@ -1899,7 +1899,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your BT  body temperature is 37.0 °C (thirty-seven point zero degrees Celsius).",
-    "ttsText": "Your BT body temperature is 37.0 degrees Celsius .",
+    "ttsText": "Your body temperature body temperature is 37.0 degrees Celsius .",
     "audioPath": "audio/patient-5-richard-gere/slide-028.wav"
   },
   {
@@ -1910,7 +1910,7 @@
     "speaker": "nurse",
     "voice": "female_nurse",
     "text": "Your O2 sat  oxygen saturation is 99% (ninety-nine percent).",
-    "ttsText": "Your oxygen saturation oxygen saturation is 99% .",
+    "ttsText": "Your oxygen saturation oxygen saturation is 99 percent .",
     "audioPath": "audio/patient-5-richard-gere/slide-029.wav"
   },
   {
