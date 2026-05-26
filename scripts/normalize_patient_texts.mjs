@@ -23,6 +23,8 @@ for (const [from, to] of replacements) {
 }
 
 text = text
+  .replace(/Good morning\. My name is _____\. I am a practical nurse\./g, 'Good morning. My name is Anna. I am a practical nurse.')
+  .replace(/Good morning\. My name is blank\. I am a practical nurse\./g, 'Good morning. My name is Anna. I am a practical nurse.')
   .replace(/(\d+) kilograms \(/g, '$1 kilograms (')
   .replace(/(\d+) centimeters \(/g, '$1 centimeters (')
   .replace(/\(blood pressure\)/gi, '')
@@ -31,4 +33,4 @@ text = text
 
 const patients = JSON.parse(text);
 fs.writeFileSync(file, `${JSON.stringify(patients, null, 2)}\n`, 'utf8');
-console.log('Normalized patient text labels and units.');
+console.log('Normalized patient text labels and units. Nurse name set to Anna.');
