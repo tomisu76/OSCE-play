@@ -1,5 +1,90 @@
 (() => {
-  const AUDIO_LINK_VERSION = 'slide001-20260526';
+  const AUDIO_LINK_VERSION = 'slide001-20260526b';
+  let directAudio = null;
+  let directAutoPlay = false;
+
+  function getActiveSlideIndex() {
+    const slides = Array.from(document.querySelectorAll('.fs-slide'));
+    const index = slides.findIndex(slide => slide.classList.contains('active'));
+    return index >= 0 ? index : 0;
+  }
+
+  function getDirectAudioPath(slideIndex = getActiveSlideIndex()) {
+    const patient = window.getPatient?.();
+    if (!patient) return '';
+    const folder = patient.audioFolder || `patient-${patient.id}-${String(patient.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
+    const fileNumber = String(slideIndex).padStart(3, '0');
+    return `/audio/${folder}/slide-${fileNumber}.wav?v=${AUDIO_LINK_VERSION}`;
+  }
+
+  function stopDirectAudio() {
+    if (directAudio) {
+      directAudio.pause();
+      directAudio.currentTime = 0;
+      directAudio = null;
+    }
+  }
+
+  function showAudioError(path) {
+    const activeSlide = document.querySelector('.fs-slide.active');
+    const button = activeSlide?.querySelector('.slide-audio-btn');
+    if (button) {
+      button.textContent = `Audio not found: ${path}`;
+      button.classList.add('audio-missing');
+    }
+    console.error('OSCE Play audio failed:', path);
+  }
+
+  window.playCurrentAudio = function playCurrentAudioDirect(onEnded) {
+    const slideIndex = getActiveSlideIndex();
+    const path = getDirectAudioPath(slideIndex);
+    if (!path) return;
+
+    stopDirectAudio();
+    directAudio = new Audio(path);
+    directAudio.preload = 'auto';
+    directAudio.onended = () => {
+      directAudio = null;
+      if (typeof onEnded === 'function') onEnded();
+    };
+    directAudio.onerror = () => {
+      showAudioError(path);
+      if (typeof onEnded === 'function') onEnded();
+    };
+    directAudio.play().catch(() => showAudioError(path));
+  };
+
+  window.togglePresentationPlayback = function toggleDirectPresentationPlayback() {
+    const button = document.getElementById('playAllButton');
+    if (directAutoPlay) {
+      directAutoPlay = false;
+      stopDirectAudio();
+      if (button) button.textContent = '▶ Prehraj celú prezentáciu';
+      return;
+    }
+
+    directAutoPlay = true;
+    if (button) button.textContent = '⏸ Stop';
+
+    const playThenNext = () => {
+      if (!directAutoPlay) return;
+      const slides = Array.from(document.querySelectorAll('.fs-slide'));
+      const currentIndex = getActiveSlideIndex();
+      window.playCurrentAudio(() => {
+        if (!directAutoPlay) return;
+        if (currentIndex >= slides.length - 1) {
+          directAutoPlay = false;
+          if (button) button.textContent = '▶ Prehraj celú prezentáciu';
+          return;
+        }
+        window.nextSlide?.();
+        setTimeout(playThenNext, 450);
+      });
+    };
+
+    playThenNext();
+  };
+
   const originalGetAudioPath = window.getAudioPath;
   if (typeof originalGetAudioPath === 'function') {
     window.getAudioPath = function getFixedAudioPath(patient, slideNumber) {
